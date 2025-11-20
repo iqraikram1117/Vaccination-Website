@@ -594,18 +594,13 @@
       });
       
       // Book button click
-      $('.btn-book').click(function() {
-        const hospitalName = $(this).data('hospital');
-        const hospitalId = $(this).data('id');
-        
-        if(<?php echo isset($_SESSION['patient_session']) ? 'true' : 'false'; ?>) {
-          // Redirect to booking page or show modal
-          window.location.href = 'appointment.php?hospital=' + hospitalId;
-        } else {
-          alert('Please login to book an appointment');
-          window.location.href = 'login.php';
-        }
-      });
+    $('.btn-book').click(function() {
+    const hospitalName = $(this).data('hospital');
+    const hospitalId = $(this).data('id');
+    
+    // Directly redirect to appointment page - let PHP handle the session check there
+    window.location.href = 'appointment.php?hospital=' + hospitalId;
+});
       
       function filterHospitals(filter) {
         let visibleCount = 0;

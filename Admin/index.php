@@ -1,10 +1,30 @@
 <?php
-    session_start();
-    if(!isset($_SESSION['admin_session']))
-    {
-        echo "<script>window.location.href='login.php'</script>";
-    }
+// admin/dashboard.php یا admin/index.php میں
 
+include("connection.php");
+session_start();
+
+// ایڈمن لاگین چیک کریں
+if(!isset($_SESSION['admin_session'])) {
+    header("location: login.php");
+    exit();
+}
+
+// یہ کوڈ یہاں ڈالیں
+$query = "SELECT 
+            tbl_patient.name as 'patient_name',
+            tbl_hospital.name as 'hospital_name', 
+            tbl_vaccine.name as 'vaccine_name', 
+            tbl_appointment.* 
+          FROM tbl_appointment 
+          INNER JOIN tbl_hospital ON tbl_appointment.h_id = tbl_hospital.id 
+          INNER JOIN tbl_vaccine ON tbl_appointment.v_id = tbl_vaccine.id 
+          INNER JOIN tbl_patient ON tbl_appointment.p_id = tbl_patient.id 
+          ORDER BY tbl_appointment.date DESC";
+$result = mysqli_query($connection, $query);
+
+// ڈیبگ کے لیے
+echo "<!-- Debug: " . mysqli_num_rows($result) . " appointments found -->";
 ?>
 <!DOCTYPE html>
 <html lang="en">

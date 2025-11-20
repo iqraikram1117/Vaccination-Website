@@ -21,7 +21,7 @@
     {
         width: 100%;
         height: 100vh;
-        background: url("assets/imgs/hero-bg.png");
+        background: url("assets/imgs/hero.png");
         background-size: 100% 90%;
         background-position: 0% 0% 150%;
         background-repeat: no-repeat;
@@ -33,6 +33,11 @@
         display: flex;
         justify-content: flex-start;
     }
+    .main .form input[type="submit"]:hover
+{
+    background: #4763e0;
+    color: #fff;
+}
 
 </style>
 <body>

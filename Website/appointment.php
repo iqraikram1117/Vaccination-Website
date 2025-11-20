@@ -1,15 +1,22 @@
 <?php
+include("../Admin/connection.php");
+session_start();
 
-  include("../Admin/connection.php");
-  session_start();
-  if(!isset($_SESSION['patient_session']))
-  {
-    echo "<script>window.location.href='login.php'</script>";
-  }
-  $query = "SELECT * FROM tbl_patient WHERE id=$_SESSION[patient_session]";
-  $result = mysqli_query($connection,$query);
-  $patient = mysqli_fetch_assoc($result);
+// اگر user logged in نہیں ہے تو login page پر redirect کریں
+if(!isset($_SESSION['patient_session'])) {
+    echo "<script>
+            alert('Please login to book an appointment');
+            window.location.href='login.php';
+          </script>";
+    exit();
+}
 
+// اگر hospital ID URL میں ہے تو اسے auto-select کریں
+$selected_hospital = isset($_GET['hospital']) ? $_GET['hospital'] : '';
+
+$query = "SELECT * FROM tbl_patient WHERE id=$_SESSION[patient_session]";
+$result = mysqli_query($connection,$query);
+$patient = mysqli_fetch_assoc($result);
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,11 +1,12 @@
 <?php
-    include("connection.php");
-    session_start();
-    if(!isset($_SESSION['admin_session']))
-    {
-        echo "<script>window.location.href='login.php'</script>";
-    }
+// Admin/appointment.php میں
+include("connection.php");
+session_start();
 
+if(!isset($_SESSION['admin_session'])) {
+    echo "<script>window.location.href='login.php'</script>";
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -255,22 +256,37 @@
                     </thead>
                     <tbody>
                         <?php
-                            $query = "SELECT tbl_patient.name as 'pname', tbl_hospital.name as 'hname', tbl_vaccine.name as 'vname', tbl_appointment.* FROM tbl_appointment INNER JOIN tbl_patient ON tbl_appointment.p_id = tbl_patient.id INNER JOIN tbl_hospital ON tbl_appointment.h_id=tbl_hospital.id INNER JOIN tbl_vaccine ON tbl_appointment.v_id=tbl_vaccine.id";
+                            $query = "SELECT 
+                                        tbl_patient.name as 'pname', 
+                                        tbl_hospital.name as 'hname', 
+                                        tbl_vaccine.name as 'vname', 
+                                        tbl_appointment.* 
+                                      FROM tbl_appointment 
+                                      LEFT JOIN tbl_patient ON tbl_appointment.p_id = tbl_patient.id 
+                                      LEFT JOIN tbl_hospital ON tbl_appointment.h_id = tbl_hospital.id 
+                                      LEFT JOIN tbl_vaccine ON tbl_appointment.v_id = tbl_vaccine.id
+                                      ORDER BY tbl_appointment.id DESC";
                             $result = mysqli_query($connection,$query);
-                            foreach($result as $row)
-                            {
-                                echo 
-                                "<tr>
-                                    <td>$row[id]</td>
-                                    <td>$row[pname]</td>
-                                    <td>$row[hname]</td>
-                                    <td>$row[date]</td>
-                                    <td>$row[time]</td>
-                                    <td>$row[vname]</td>
-                                    <td>$row[status]</td>
-                                </tr>";
+                            
+                            if(mysqli_num_rows($result) > 0) {
+                                foreach($result as $row) {
+                                    echo "<tr>
+                                            <td>$row[id]</td>
+                                            <td>".($row['pname'] ?? 'N/A')."</td>
+                                            <td>".($row['hname'] ?? 'N/A')."</td>
+                                            <td>$row[date]</td>
+                                            <td>$row[time]</td>
+                                            <td>".($row['vname'] ?? 'N/A')."</td>
+                                            <td>$row[status]</td>
+                                        </tr>";
+                                }
+                            } else {
+                                echo "<tr>
+                                        <td colspan='7' style='text-align: center; padding: 20px;'>
+                                            No appointments found!
+                                        </td>
+                                      </tr>";
                             }
-
                         ?>
                     </tbody>
                 </table>
@@ -285,5 +301,4 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
-
 </html>

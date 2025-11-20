@@ -1,3 +1,14 @@
 <?php
-    $connection = mysqli_connect("localhost","root","","vaccination_system");
+// Admin/connection.php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "vaccination_system";
+
+$connection = mysqli_connect($servername, $username, $password, $database);
+
+if(!$connection) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 ?>
+
