@@ -266,78 +266,85 @@
 
   <!-- end doctor section -->
 
-  <!-- contact section -->
-  <section class='contact_section layout_padding <?php if(!isset($_SESSION['patient_session'])){ echo "hideContact";} ?>'>
-    <div class="container">
-      <div class="heading_container">
-        <h2>
-          Get In Touch
-        </h2>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form_container contact-form">
-            <form method="post">
-              <div class="form-row">
-                <div class="col-lg-6">
-                  <div>
-                    <input type="hidden" value="<?php echo $active_patient['id'];?>" name="pid">
-                    <input type="text" placeholder="Your Name" value="<?php echo $active_patient['name'];?>"  readonly/>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div>
-                    <input type="text" placeholder="Phone Number" value="<?php echo $active_patient['contact'];?>" readonly/>
-                  </div>
+ <!-- contact section -->
+<section class='contact_section layout_padding <?php if(!isset($_SESSION['patient_session'])){ echo "hideContact";} ?>'>
+  <div class="container">
+    <div class="heading_container">
+      <h2>
+        Give Your Feedback
+      </h2>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form_container contact-form">
+          <form method="post">
+            <div class="form-row">
+              <div class="col-lg-6">
+                <div>
+                  <input type="text" placeholder="Your Name" value="<?php echo isset($_SESSION['patient_name']) ? htmlspecialchars($_SESSION['patient_name']) : ''; ?>" readonly/>
                 </div>
               </div>
-              <div>
-                <input type="email" placeholder="Email" value="<?php echo $active_patient['email'];?>" readonly/>
+              <div class="col-lg-6">
+                <div>
+                  <input type="text" placeholder="Phone Number" value="<?php echo isset($_SESSION['patient_contact']) ? htmlspecialchars($_SESSION['patient_contact']) : ''; ?>" readonly/>
+                </div>
               </div>
-              <div>
-                <input type="text" class="message-box" placeholder="Message" name="message"/>
-              </div>
-              <div class="btn_box">
-                <button type="submit" name="btnsend">Send</button>
-              </div>
-            </form>
-            <?php
-                if(isset($_POST['btnsend']))
-                {
-                  $pid = $_POST['pid'];
-                  $message = $_POST['message'];
-                  $result = mysqli_query($connection,"INSERT INTO tbl_feedback(p_id,message) VALUES('$pid','$message')");
+            </div>
+            <div>
+              <input type="email" placeholder="Email" value="<?php echo isset($_SESSION['patient_email']) ? htmlspecialchars($_SESSION['patient_email']) : ''; ?>" readonly/>
+            </div>
+            <div>
+              <textarea class="message-box" placeholder="Your Feedback Message" name="message" rows="6" required style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; resize: vertical;"></textarea>
+            </div>
+            <div class="btn_box">
+              <button type="submit" name="btnsend">Send Feedback</button>
+            </div>
+          </form>
+          <?php
+            if(isset($_POST['btnsend']))
+            {
+              // Check if user is logged in
+              if(!isset($_SESSION['patient_session'])) {
+                echo "<script>alert('Please login to send feedback')</script>";
+              } else {
+                $patient_id = $_SESSION['patient_id'];
+                $message = mysqli_real_escape_string($connection, $_POST['message']);
+                
+                // Validate that message is not empty
+                if(empty(trim($message))) {
+                  echo "<script>alert('Please enter a message')</script>";
+                } else {
+                  $result = mysqli_query($connection, "INSERT INTO tbl_feedback(p_id, message) VALUES('$patient_id', '$message')");
                   if($result)
                   {
-                    echo "<script>alert('Feedback Sent Successfully')</script>";
+                    echo "<script>
+                            alert('Feedback Sent Successfully');
+                            document.querySelector('textarea[name=\"message\"]').value = '';
+                          </script>";
+                  } else {
+                    echo "<script>alert('Error sending feedback: " . mysqli_error($connection) . "')</script>";
                   }
                 }
-            ?>
-          </div>
+              }
+            }
+          ?>
         </div>
-        <div class="col-md-6">
-          <div class="map_container">
-            <div class="map">
-              <div id="googleMap"></div>
-            </div>
+      </div>
+      <div class="col-md-6">
+        <div class="map_container">
+          <div class="map">
+            <div id="googleMap"></div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-  <!-- end contact section -->
+  </div>
+</section>
+<!-- end contact section -->
 
   <!-- client section -->
 
-  <section class="client_section layout_padding-bottom">
-    <div class="container">
-      <div class="heading_container heading_center ">
-        <h2>
-          Testimonial
-        </h2>
-      </div>
-      <div id="carouselExample2Controls" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner">
+
           <?php 
 
             $result = mysqli_query($connection,"SELECT tbl_feedback.*, tbl_patient.name as 'pname',tbl_patient.image FROM tbl_feedback INNER JOIN tbl_patient ON tbl_feedback.p_id = tbl_patient.id WHERE tbl_feedback.status='show'");

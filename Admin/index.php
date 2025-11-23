@@ -1,16 +1,16 @@
 <?php
-// admin/dashboard.php یا admin/index.php میں
+
 
 include("connection.php");
 session_start();
 
-// ایڈمن لاگین چیک کریں
+
 if(!isset($_SESSION['admin_session'])) {
     header("location: login.php");
     exit();
 }
 
-// یہ کوڈ یہاں ڈالیں
+
 $query = "SELECT 
             tbl_patient.name as 'patient_name',
             tbl_hospital.name as 'hospital_name', 

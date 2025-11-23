@@ -54,10 +54,7 @@
                         <span class="title">Covid Test</span>
                     </a>
                 </li>
-
-                
-
-                <li>
+               <li>
                     <a href="logout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
