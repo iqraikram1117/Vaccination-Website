@@ -27,6 +27,14 @@
                         <span class="title">Hospital</span>
                     </a>
                 </li>
+                  <li>
+                    <a href="vaccine.php">
+                        <span class="icon">
+                            <ion-icon name="medkit-outline"></ion-icon>
+                        </span>
+                        <span class="title">Vaccine </span>
+                    </a>
+                </li>
 
                 <li>
                     <a href="patient.php">
